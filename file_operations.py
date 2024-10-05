@@ -1,6 +1,7 @@
 import os
 from abc import ABC, abstractmethod
 
+
 class AbstractFile(ABC):
     def __init__(self, file_name: str):
         self._file_name = file_name
@@ -31,6 +32,14 @@ class AbstractFile(ABC):
 
     @abstractmethod
     def rename(self, new_file_name: str) -> None:
+        pass
+
+    @abstractmethod
+    def replace_string(self, old_string: str, new_string: str) -> None:
+        pass
+
+    @abstractmethod
+    def search(self, query: str) -> bool:
         pass
 
 
@@ -95,4 +104,24 @@ class File(AbstractFile):
         except OSError:
             print(f"Error renaming file: {self._file_name}")
 
+    def replace_string(self, old_string: str, new_string: str) -> None:
+        try:
+            with open(self._file_name, 'r') as file:
+                content = file.read()
 
+            content = content.replace(old_string, new_string)
+
+            with open(self._file_name, 'w') as file:
+                file.write(content)
+
+        except OSError:
+            print(f"Error processing file: {self._file_name}")
+
+    def search(self, query: str) -> bool:
+        try:
+            with open(self._file_name, 'r') as file:
+                content = file.read()
+                return query in content
+        except OSError:
+            print(f"Error reading file: {self._file_name}")
+            return False
